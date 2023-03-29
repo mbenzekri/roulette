@@ -330,6 +330,55 @@ class SMourad1 extends Strategie {
 
 }
 
+class STaha extends Strategie {
+
+    /**
+     * @param {Session} session - 
+     */
+    init(session) {
+        // Nothing to do
+    }
+    /**
+     * @param {Session} session 
+     */
+    jeu(session) {
+        // calculer la colonne "col" tirée la plus éloignée dans les jeux précédents
+
+        // calculer la douzaine "dz" tirée la plus éloignée dans les jeux précédents
+
+        // calcule la couleur la plus récente (on projette que cette couleur va continuer à sortie)
+        // dans les numero de l'intersection  
+
+        const jeu = new Jeu()
+        let nbperte = 0
+        let firstwin = false
+        for(let i = session.tirages.length - 1;i>=0;i--) {
+            if (session.tirages[i].gain == 0) nbperte++
+            else {
+                this.firstwin = true
+                break
+            }
+        }
+        if (this.firstwin) {
+            if (nbperte > 9) nbperte = 0
+            for(let i = Math.min(nbperte+1,10);i>0;i--) {
+                const mise = this.numeros.length * i
+                if (mise < session.balance) {
+                    this.numeros.forEach(numero => jeu.misePlein(numero,i))
+                    break
+                }
+            }    
+        } else {
+            if (this.numeros.length < session.balance) {
+                this.numeros.forEach(numero => jeu.misePlein(numero,1))
+            }
+        }
+        if (jeu.mise <= 0) jeu.stop = true
+        return jeu
+    }
+
+}
+
 // jouer 1 jeton sur chaque colonne non sorti la fois précédente
 // de plus la mise est sur les gains (balance > initial) on ajoute 1 jeton par colonne
 class S2CNotLastDoubleGain extends S2CNotLast {
